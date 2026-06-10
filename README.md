@@ -1,4 +1,4 @@
-# Granola Notes for Obsidian
+# Granola Archive for Obsidian
 
 Sync your [Granola](https://www.granola.ai) meeting notes into Obsidian with fully customisable templates.
 
@@ -26,8 +26,8 @@ This plugin is not in the Obsidian community plugins directory. Install it manua
 
 ```bash
 VAULT=~/path/to/your/vault
-mkdir -p "$VAULT/.obsidian/plugins/granola-notes"
-cp main.js manifest.json "$VAULT/.obsidian/plugins/granola-notes/"
+mkdir -p "$VAULT/.obsidian/plugins/obsidian-granola-archive"
+cp main.js manifest.json "$VAULT/.obsidian/plugins/obsidian-granola-archive/"
 ```
 
 4. In Obsidian: **Settings → Community Plugins → reload** → enable **Granola Notes**
