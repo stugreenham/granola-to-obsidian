@@ -1,6 +1,6 @@
 {
   "id": "obsidian-granola-archive",
-  "name": "Granola Archive",
+  "name": "Granola to Obsidian",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
   "description": "Sync Granola meeting notes to Obsidian with customisable templates. Reads credentials directly from the Granola desktop app — no paid tier required.",
