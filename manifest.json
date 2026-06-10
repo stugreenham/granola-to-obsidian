@@ -1,0 +1,10 @@
+{
+  "id": "granola-notes",
+  "name": "Granola Notes",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Sync Granola meeting notes to Obsidian with customisable templates. Reads credentials directly from the Granola desktop app — no paid tier required.",
+  "author": "granola-notes",
+  "authorUrl": "https://github.com/stugreenham/granola-notes",
+  "isDesktopOnly": true
+}

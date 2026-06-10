@@ -1,0 +1,19 @@
+{
+  "name": "granola-notes",
+  "version": "1.0.0",
+  "description": "Sync Granola meeting notes to Obsidian with customisable templates",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc --noEmit -p tsconfig.json && node esbuild.config.mjs production"
+  },
+  "keywords": ["obsidian", "granola", "meetings"],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "0.17.3",
+    "obsidian": "latest",
+    "typescript": "5.2.2"
+  }
+}
