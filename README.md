@@ -1,4 +1,4 @@
-# Granola Archive for Obsidian
+# Granola to Obsidian
 
 Sync your [Granola](https://www.granola.ai) meeting notes into Obsidian with fully customisable templates.
 
