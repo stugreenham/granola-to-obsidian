@@ -23,9 +23,12 @@ async function fetchDocumentPage(
     body: JSON.stringify({ limit, offset, include_last_viewed_panel: true }),
   });
 
-  const data = res.json as GranolaDoc[] | { documents: GranolaDoc[] } | null;
+  const data = res.json as GranolaDoc[] | { docs: GranolaDoc[] } | { documents: GranolaDoc[] } | null;
   if (!data) return [];
   if (Array.isArray(data)) return data;
+  if (Array.isArray((data as { docs: GranolaDoc[] }).docs)) {
+    return (data as { docs: GranolaDoc[] }).docs;
+  }
   if (Array.isArray((data as { documents: GranolaDoc[] }).documents)) {
     return (data as { documents: GranolaDoc[] }).documents;
   }
@@ -80,6 +83,7 @@ export async function fetchTranscript(
   });
 
   const data = res.json as TranscriptEntry[] | null;
+  console.log("Granola transcript raw response:", JSON.stringify(data)?.slice(0, 500));
   if (!Array.isArray(data)) return [];
   return data;
 }

@@ -29,18 +29,15 @@ export interface GranolaDoc {
   notes_markdown?: string;
 }
 
-export interface TranscriptWord {
-  word: string;
-  start_time?: number;
-  end_time?: number;
-}
-
 export interface TranscriptEntry {
+  document_id?: string;
+  id?: string;
   source: string;
-  speaker?: string;
-  start_time?: number;
-  end_time?: number;
-  words: TranscriptWord[];
+  text: string;
+  detected_speaker_name?: string | null;
+  start_timestamp?: string;
+  end_timestamp?: string;
+  is_final?: boolean;
 }
 
 export interface Participant {

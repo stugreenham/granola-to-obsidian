@@ -111,7 +111,7 @@ export function applyTemplate(
     granola_attendees: names.join(", "),
     granola_attendees_linked: names.map((n) => `[[${n}]]`).join(", "),
     granola_attendees_list: names.map((n) => `- ${n}`).join("\n"),
-    granola_attendees_linked_list: names.map((n) => `- [[${n}]]`).join("\n"),
+    granola_attendees_linked_list: names.map((n) => `- "[[${n}]]"`).join("\n"),
   };
 
   // Conditional blocks first
@@ -132,18 +132,50 @@ export function applyTemplate(
 }
 
 export function sanitizeFilename(name: string): string {
-  return name.replace(/[\\/:*?"<>|#^[\]]/g, "").slice(0, 100).trim();
+  return name
+    .replace(/\|/g, "-")          // | → -
+    .replace(/[<>]/g, "-")        // < > → -
+    .replace(/[\\/*?"#^[\]]/g, "") // strip remaining illegal chars
+    .replace(/\s*-\s*/g, " - ")   // normalise dashes
+    .replace(/\s+/g, " ")         // collapse whitespace
+    .slice(0, 100)
+    .trim();
+}
+
+/**
+ * Format a date using a simple token-based format string.
+ * Supported tokens: YYYY, MM, DD, HH, mm, ss
+ */
+function formatDate(d: Date, fmt: string): string {
+  return fmt
+    .replace("YYYY", String(d.getFullYear()))
+    .replace("MM",   String(d.getMonth() + 1).padStart(2, "0"))
+    .replace("DD",   String(d.getDate()).padStart(2, "0"))
+    .replace("HH",   String(d.getHours()).padStart(2, "0"))
+    .replace("mm",   String(d.getMinutes()).padStart(2, "0"))
+    .replace("ss",   String(d.getSeconds()).padStart(2, "0"));
 }
 
 /**
  * Generate a filename from a pattern.
- * Available placeholders: {date}, {title}, {id}
+ * Available placeholders:
+ *   {date}               — YYYY-MM-DD (default date)
+ *   {{date:YYYY-MM-DD-HHmm}} — custom date format
+ *   {title}, {id}
  */
 export function generateFilename(pattern: string, data: MeetingData): string {
-  return sanitizeFilename(
-    pattern
-      .replace("{date}", data.granola_date)
-      .replace("{title}", data.granola_title)
-      .replace("{id}", data.granola_id)
-  );
+  const meetingDate = new Date(data.granola_created);
+
+  // Replace {{date:FORMAT}} with formatted date
+  let result = pattern.replace(/\{\{date:([^}]+)\}\}/g, (_match, fmt: string) => {
+    return formatDate(meetingDate, fmt);
+  });
+
+  // Replace simple placeholders
+  result = result
+    .replace("{date}", data.granola_date)
+    .replace("{title}", data.granola_title)
+    .replace("{id}", data.granola_id);
+
+  return sanitizeFilename(result);
 }

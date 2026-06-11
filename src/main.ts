@@ -74,7 +74,7 @@ export default class GranolaNotesPlugin extends Plugin {
 
   updateRibbonIcon(): void {
     if (this.settings.showRibbonIcon && !this.ribbonIconEl) {
-      this.ribbonIconEl = this.addRibbonIcon("calendar-sync", "Sync Granola meetings", () => {
+      this.ribbonIconEl = this.addRibbonIcon("wheat", "Sync Granola meetings", () => {
         void this.syncMeetings(true);
       });
     } else if (!this.settings.showRibbonIcon && this.ribbonIconEl) {
@@ -293,43 +293,25 @@ function formatTime(d: Date): string {
   return `${hours}:${minutes} ${ampm}`;
 }
 
-function formatTimestamp(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
+function formatIsoTime(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+  return `${hours}:${minutes} ${ampm}`;
 }
 
 function formatTranscript(entries: TranscriptEntry[]): string {
   if (entries.length === 0) return "";
 
-  const lines: string[] = [];
-  let currentSpeaker = "";
-  let currentWords: string[] = [];
-  let blockStart: number | undefined;
-
-  const flushBlock = () => {
-    if (!currentSpeaker || currentWords.length === 0) return;
-    const ts = blockStart !== undefined ? ` *(${formatTimestamp(blockStart)})*` : "";
-    lines.push(`### ${currentSpeaker}${ts}`);
-    lines.push(currentWords.join(" "));
-    lines.push("");
-  };
-
-  for (const entry of entries) {
-    const speaker = entry.source === "microphone" ? "You" : (entry.speaker || "Them");
-    const words = entry.words.map((w) => w.word).join(" ").trim();
-    if (!words) continue;
-
-    if (speaker !== currentSpeaker) {
-      flushBlock();
-      currentSpeaker = speaker;
-      currentWords = [words];
-      blockStart = entry.start_time;
-    } else {
-      currentWords.push(words);
-    }
-  }
-  flushBlock();
-
-  return lines.join("\n").trim();
+  return entries
+    .filter((e) => e.text?.trim())
+    .map((e) => {
+      const speaker = e.source === "microphone" ? "You" : (e.detected_speaker_name || "Them");
+      const ts = e.start_timestamp ? ` (${formatIsoTime(e.start_timestamp)})` : "";
+      return `${speaker}${ts}: ${e.text.trim()}`;
+    })
+    .join("\n");
 }

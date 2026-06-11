@@ -1,6 +1,6 @@
 {
   "name": "obsidian-granola-archive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sync Granola meeting notes to Obsidian with customisable templates",
   "main": "main.js",
   "scripts": {
